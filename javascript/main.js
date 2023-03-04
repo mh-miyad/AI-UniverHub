@@ -4,55 +4,59 @@ const modalCardTwo = document.getElementById('secondModal');
 const showAllSection = document.getElementById('showall');
 const spinner = document.getElementById('spinner');
 const showAllBtn = document.getElementById('show-btn');
+const sortBtn = document.getElementById('sort-button');
 
+let allAi = [];
 
-
-//* first Fetching data from provided  APi Link start Here
-const loadAidata = async (data) => {
+const loadAidata = async (data1) => {
   toggleLoader(true);
   const response = await fetch(`https://openapi.programming-hero.com/api/ai/tools`)
   const apiData = await response.json();
-  displayApi(apiData.data.tools, data);
-
-
+  displayApi(apiData.data.tools, data1);
+  allAi.push(...apiData.data.tools);
 };
-//  Here Make A display Load Function  
 
-// spinner
 const toggleLoader = isloading => {
-  if (isloading) {
-    spinner.classList.remove('hidden');
-  } else {
-    spinner.classList.add('hidden')
-  }
-
+  return new Promise(resolve => {
+    if (isloading) {
+      spinner.classList.remove('hidden');
+    } else {
+      spinner.classList.add('hidden');
+    }
+    setTimeout(() => {
+      resolve();
+    }, 1000);
+  });
 };
-// spinner
 
+const sortAllData = (data) => {
+  return new Promise(resolve => {
+    data.sort((a, b) => new Date(a.published_in) - new Date(b.published_in));
+    resolve(data);
+  });
+}
 
-showAllBtn.addEventListener('click', function () {
+sortBtn.addEventListener('click', async () => {
+  card.innerHTML = '';
+  toggleLoader(true);
+  const sortedData = await sortAllData(allAi);
+  displayApi(sortedData);
+  await toggleLoader(false);
+});
+
+showAllBtn.addEventListener("click", function () {
 
   loadAidata();
 
 });
-//! first Fetching data from provided  APi Link End Here
-//  Here Make A display Load Function 
-const displayApi = (allAi, data) => {
-
+const displayApi = async (allAi, data1) => {
   card.innerText = '';
-
-  // show button
-  toggleLoader(true);
-  if (data && allAi.length > 7) {
+  if (data1 && allAi.length > 7) {
     allAi = allAi.slice(0, 6);
     showAllSection.classList.remove('hidden')
-
-
   } else {
     showAllSection.classList.add('hidden')
-
   }
-  // show button 
   for (const aiData of allAi) {
     const div = document.createElement('div');
     div.innerHTML = `
@@ -106,6 +110,7 @@ const openModal = async (id) => {
 
 function modalFunction(data) {
 
+
   modalCardOne.innerHTML = `
     
     <a href="./index.html">
@@ -118,9 +123,9 @@ function modalFunction(data) {
   <div
     class="dark:text-white flex justify-between items-center font-semibold text-center px-10 my-5"
   >
-    <div class="leading-10 text-blue-600">${data.pricing[0].price} <span class="">${data.pricing[0].plan}</span></div>
-    <div class="leading-10 text-yellow-600">${data.pricing[1].price} <br> <span class="">${data.pricing[1].plan}</span></div>
-    <div class="leading-10 text-green-600">${data.pricing[2].price}<span class="mx-4">${data.pricing[2].plan}</span></div>
+  <div class="leading-10 text-blue-600">${data.pricing[0].price} <span class="">${data.pricing[0].plan}</span></div>
+  <div class="leading-10 text-yellow-600">${data.pricing[1].price} <br> <span class="">${data.pricing[1].plan}</span></div>
+  <div class="leading-10 text-green-600">${data.pricing[2].price}<span class="mx-4">${data.pricing[2].plan}</span></div>
   </div>
   <div class="flex justify-between">
     <div>
@@ -186,9 +191,9 @@ function closeModal() {
 
 
 // By default Data Is Loading 
-const data = 'data';
 
-loadAidata(data);
+const data1 = 'data';
+loadAidata(data1);
 
 
 
