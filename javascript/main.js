@@ -71,7 +71,7 @@ const displayApi = async (allAi, data1) => {
             <ul class="mb-3 font-normal text-gray-700 dark:text-gray-400">
                 <li class="m-2">1 <span class="text-md mx-2">${aiData.features[0]}</span></li>
                 <li class="m-2">2 <span class="text-md mx-2">${aiData.features[1]}</span></li>
-                <li class="m-2">3 <span class="text-md mx-2">${aiData.features[2]}</span></li>
+                <li class="m-2">3 <span class="text-md mx-2}">${aiData.features[2] === undefined ? 'this features is missing' : aiData.features[2]}</span></li>              
             </ul>
             <hr class="h-1 my-6 bg-blue-300">
            <div class="flex justify-between items-center">
@@ -159,7 +159,7 @@ function modalFunction(data) {
     <div
       class="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 rounded-full"
     >
-      <span class="text-xs font-semibold">${data.accuracy.score * 100}% Accuracy</span>
+    <span class="text-xs font-semibold">${data.accuracy.score > 0 ? data.accuracy.score * 100 : 'No found'}% Accuracy</span>
     </div>
   </div>
   <p class="text-center dark:text-white p-5 text-3xl">
